@@ -22,6 +22,7 @@ export class AccountEntity {
 
   @Column({
     type: 'boolean',
+    default: true,
   })
   activeFlag: boolean;
 
