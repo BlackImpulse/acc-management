@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { AccountModule } from './account/account.module';
 import { PersonModule } from './person/person.module';
 
-const MODULES = [PersonModule];
+const MODULES = [AccountModule, PersonModule];
 
 @Module({
   imports: [...MODULES],
