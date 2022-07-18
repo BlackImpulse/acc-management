@@ -1,7 +1,7 @@
-import { Person } from '../../person/model/person';
 import { ApiProperty } from '@nestjs/swagger';
+import { PersonDto } from '../../person/dto/person.dto';
 
-export class CreateAccountResponseDto {
+export class AccountDto {
   @ApiProperty()
   id: number;
 
@@ -20,6 +20,6 @@ export class CreateAccountResponseDto {
   @ApiProperty()
   createDate: Date;
 
-  @ApiProperty()
-  client: Person;
+  @ApiProperty({ type: PersonDto })
+  client: PersonDto;
 }

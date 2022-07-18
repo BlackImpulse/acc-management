@@ -4,7 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  Min,
+  IsPositive,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -15,7 +15,7 @@ export class CreateAccountRequestDto {
   })
   @IsNotEmpty()
   @IsInt()
-  @Min(0)
+  @IsPositive()
   personId: number;
 
   @ApiProperty({
@@ -32,7 +32,7 @@ export class CreateAccountRequestDto {
   })
   @IsOptional()
   @IsNumber()
-  @Min(0)
+  @IsPositive()
   dailyWithdrawalLimit?: number;
 
   @ApiProperty({

@@ -1,31 +1,28 @@
-## Installation
+# Running the app
+
+## development
+#### step 1: create .env
+#### step 2: set DATABASE_HOST=localhost
+#### step 3: comment main container in docker-compose
 
 ```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
+$ docker-compose up
+$ npm --force install
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+## production mode
+#### step 1: create .env
+#### step 2: set DATABASE_HOST=postgres
 
+```bash
+$ docker-compose up
+```
+
+# Test
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
+
+![img.png](db_schema.png)

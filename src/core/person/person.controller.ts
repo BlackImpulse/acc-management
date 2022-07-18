@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,9 +23,11 @@ import { UpdatePersonRequestDto } from './dto/update-person-request.dto';
 import { CreatePersonResponseDto } from './dto/create-person-response.dto';
 import { UpdatePersonResponseDto } from './dto/update-person-response.dto';
 import { PersonService } from './person.service';
-import { Person } from './model/person';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { RequestLogInterceptor } from '../../common/interceptors/request-log.interceptor';
+import { PersonDto } from './dto/person.dto';
 
+@UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
 @ApiTags('person')
 @Controller('person')
@@ -43,20 +46,20 @@ export class PersonController {
   }
 
   @ApiOperation({ summary: 'Get all persons' })
-  @ApiResponse({ status: HttpStatus.OK, type: Person })
+  @ApiResponse({ status: HttpStatus.OK, type: [PersonDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<Person[]> {
+  async findAll(): Promise<PersonDto[]> {
     return this.personService.findAll();
   }
 
   @ApiOperation({ summary: 'Get person by id' })
-  @ApiResponse({ status: HttpStatus.OK, type: Person })
+  @ApiResponse({ status: HttpStatus.OK, type: PersonDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Person> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PersonDto> {
     return this.personService.findOne(id);
   }
 

@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -23,10 +24,12 @@ import { CreateAccountRequestDto } from './dto/create-account-request.dto';
 import { CreateAccountResponseDto } from './dto/create-account-response.dto';
 import { UpdateAccountRequestDto } from './dto/update-account-request.dto';
 import { UpdateAccountResponseDto } from './dto/update-account-response.dto';
-import { Account } from './model/account';
-import { Transaction } from '../transaction/model/transaction';
+import { RequestLogInterceptor } from '../../common/interceptors/request-log.interceptor';
+import { TransactionDto } from '../transaction/dto/transaction.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { AccountDto } from './dto/account.dto';
 
+@UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
 @ApiTags('account')
 @Controller('account')
@@ -65,31 +68,31 @@ export class AccountController {
   }
 
   @ApiOperation({ summary: 'Get transactions' })
-  @ApiResponse({ status: HttpStatus.OK, type: [Transaction] })
+  @ApiResponse({ status: HttpStatus.OK, type: [TransactionDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get('transactions/:id')
   async getTransactions(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<Transaction[]> {
+  ): Promise<TransactionDto[]> {
     return this.accountService.getTransactions(id);
   }
 
   @ApiOperation({ summary: 'Get all accounts' })
-  @ApiResponse({ status: HttpStatus.OK, type: Account })
+  @ApiResponse({ status: HttpStatus.OK, type: [AccountDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<Account[]> {
+  async findAll(): Promise<AccountDto[]> {
     return this.accountService.findAll();
   }
 
   @ApiOperation({ summary: 'Get account by id' })
-  @ApiResponse({ status: HttpStatus.OK, type: Account })
+  @ApiResponse({ status: HttpStatus.OK, type: AccountDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Account> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<AccountDto> {
     return this.accountService.findOne(id);
   }
 

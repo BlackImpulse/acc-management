@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -18,7 +19,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
-import { Transaction } from './model/transaction';
 import { UpdateTransactionRequestDto } from './dto/update-transaction-request.dto';
 import { UpdateTransactionResponseDto } from './dto/update-transaction-response.dto';
 import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
@@ -26,7 +26,10 @@ import { CreateDepositResponseDto } from './dto/create-deposit-response.dto';
 import { CreateWithdrawalRequestDto } from './dto/create-withdrawal-request.dto';
 import { CreateWithdrawalResponseDto } from './dto/create-withdrawal-response.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { RequestLogInterceptor } from '../../common/interceptors/request-log.interceptor';
+import { TransactionDto } from './dto/transaction.dto';
 
+@UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
 @ApiTags('transaction')
 @Controller('transaction')
@@ -62,20 +65,22 @@ export class TransactionController {
   }
 
   @ApiOperation({ summary: 'Get all transactions' })
-  @ApiResponse({ status: HttpStatus.OK, type: Transaction })
+  @ApiResponse({ status: HttpStatus.OK, type: [TransactionDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(): Promise<Transaction[]> {
+  async findAll(): Promise<TransactionDto[]> {
     return this.transactionService.findAll();
   }
 
   @ApiOperation({ summary: 'Get transaction by id' })
-  @ApiResponse({ status: HttpStatus.OK, type: Transaction })
+  @ApiResponse({ status: HttpStatus.OK, type: TransactionDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Transaction> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<TransactionDto> {
     return this.transactionService.findOne(id);
   }
 

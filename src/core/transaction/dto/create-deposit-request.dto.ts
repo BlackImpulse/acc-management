@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 
 export class CreateDepositRequestDto {
   @ApiProperty({
@@ -17,6 +17,6 @@ export class CreateDepositRequestDto {
   })
   @IsNotEmpty()
   @IsInt()
-  @Min(0)
+  @IsPositive()
   accountId: number;
 }

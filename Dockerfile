@@ -6,7 +6,10 @@ WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
-ADD . ./
-RUN npm install
+
+RUN npm install glob rimraf
+RUN npm --force install
+
+COPY . .
 
 RUN npm run build
