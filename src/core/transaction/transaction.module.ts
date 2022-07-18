@@ -6,6 +6,9 @@ import { TransactionRepository } from './transaction.repository';
 import { TransactionEntity } from '../../common/entity/transaction.entity';
 import { AccountModule } from '../account/account.module';
 
+/**
+ * Transaction module
+ */
 @Module({
   imports: [
     TypeOrmModule.forFeature([TransactionEntity, TransactionRepository]),

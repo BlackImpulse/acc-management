@@ -3,6 +3,10 @@ import { Account } from './account';
 import { AccountEntity } from '../../../common/entity/account.entity';
 import { PersonMapper } from '../../person/model/person.mapper';
 
+/**
+ * Account mapper
+ * @Class
+ */
 export class AccountMapper {
   static convertToEntity(accountModel: Account): AccountEntity {
     const accountEntity = {

@@ -2,12 +2,18 @@ import { format } from 'winston';
 import { utilities } from 'nest-winston';
 import * as winston from 'winston';
 
+/**
+ * Transform function
+ */
 const transformFunction = format((info) => ({
   ...info,
   service: process.env.title,
   type: info.type ?? 'internal',
 }));
 
+/**
+ * Logger config
+ */
 export const winstonLoggerConfig = {
   transports: [
     new winston.transports.Console({

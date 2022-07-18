@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MaxLength } from 'class-validator';
 
-export class LoginUserRequestDto {
+/**
+ * Login request dto
+ */
+export class LoginRequestDto {
   @ApiProperty()
   @IsString()
   @MaxLength(100)
+  /** User name */
   name: string;
 }

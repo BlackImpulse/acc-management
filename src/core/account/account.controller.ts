@@ -31,6 +31,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { AccountDto } from './dto/account.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
+/** Account controller */
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(RequestLogInterceptor)
@@ -40,6 +41,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
+  /** Block account */
   @ApiOperation({ summary: 'Block account' })
   @ApiResponse({ status: HttpStatus.OK, type: UpdateAccountResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -51,6 +53,7 @@ export class AccountController {
     return this.accountService.blockAccount(id);
   }
 
+  /** Create account */
   @ApiOperation({ summary: 'Create account' })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreateAccountResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -62,6 +65,7 @@ export class AccountController {
     return this.accountService.create(createAccountDto);
   }
 
+  /** Get balance */
   @ApiOperation({ summary: 'Get balance' })
   @ApiResponse({ status: HttpStatus.OK, type: Number })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -71,6 +75,7 @@ export class AccountController {
     return this.accountService.getBalance(id);
   }
 
+  /** Get transactions */
   @ApiOperation({ summary: 'Get transactions' })
   @ApiResponse({ status: HttpStatus.OK, type: [TransactionDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -82,6 +87,7 @@ export class AccountController {
     return this.accountService.getTransactions(id);
   }
 
+  /** Get all accounts */
   @ApiOperation({ summary: 'Get all accounts' })
   @ApiResponse({ status: HttpStatus.OK, type: [AccountDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -91,6 +97,7 @@ export class AccountController {
     return this.accountService.findAll();
   }
 
+  /** Get account by id */
   @ApiOperation({ summary: 'Get account by id' })
   @ApiResponse({ status: HttpStatus.OK, type: AccountDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -100,6 +107,7 @@ export class AccountController {
     return this.accountService.findOne(id);
   }
 
+  /** Update account */
   @ApiOperation({ summary: 'Update account' })
   @ApiResponse({ status: HttpStatus.OK, type: UpdateAccountResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -112,6 +120,7 @@ export class AccountController {
     return this.accountService.update(id, updatePersonDto);
   }
 
+  /** Remove account */
   @ApiOperation({ summary: 'Remove account' })
   @ApiResponse({ status: HttpStatus.OK })
   @ApiBadRequestResponse({ description: 'Something wrong' })

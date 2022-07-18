@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 
+/**
+ * Create withdrawal request dto
+ */
 export class CreateWithdrawalRequestDto {
   @ApiProperty({
     description: 'Transaction value',
@@ -9,6 +12,7 @@ export class CreateWithdrawalRequestDto {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  /** Transaction value */
   value: number;
 
   @ApiProperty({
@@ -18,5 +22,6 @@ export class CreateWithdrawalRequestDto {
   @IsNotEmpty()
   @IsInt()
   @IsPositive()
+  /** Transaction account id */
   accountId: number;
 }

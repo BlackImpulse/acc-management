@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PersonRepository } from './person.repository';
 import { PersonEntity } from 'src/common/entity/person.entity';
 
+/**
+ * Person module
+ */
 @Module({
   imports: [TypeOrmModule.forFeature([PersonEntity, PersonRepository])],
   providers: [PersonService],

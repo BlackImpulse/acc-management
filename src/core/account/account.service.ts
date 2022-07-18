@@ -12,6 +12,7 @@ import { UpdateAccountResponseDto } from './dto/update-account-response.dto';
 import { TransactionMapper } from '../transaction/model/transaction.mapper';
 import { Transaction } from '../transaction/model/transaction';
 
+/** Account service */
 @Injectable()
 export class AccountService {
   constructor(
@@ -19,11 +20,19 @@ export class AccountService {
     private readonly personService: PersonService,
   ) {}
 
+  /**
+   * Block account
+   * @param id
+   */
   async blockAccount(id: number): Promise<UpdateAccountResponseDto> {
     await this.findOne(id);
     return this.update(id, { activeFlag: false });
   }
 
+  /**
+   * Create account
+   * @param createAccountDto
+   */
   async create(
     createAccountDto: CreateAccountRequestDto,
   ): Promise<CreateAccountResponseDto> {
@@ -40,11 +49,19 @@ export class AccountService {
     return this.accountRepository.save(account);
   }
 
+  /**
+   * Get accounte balance
+   * @param id
+   */
   async getBalance(id: number): Promise<number> {
     const account = await this.findOne(id);
     return account.balance;
   }
 
+  /**
+   * Get account transactions
+   * @param id
+   */
   async getTransactions(id: number): Promise<Transaction[]> {
     const accountEntity = await this.accountRepository.findOne(id, {
       relations: ['transactions'],
@@ -57,6 +74,9 @@ export class AccountService {
     );
   }
 
+  /**
+   * Get all accounts
+   */
   async findAll(): Promise<Account[]> {
     const accountEntities: AccountEntity[] =
       await this.accountRepository.find();
@@ -65,6 +85,10 @@ export class AccountService {
     );
   }
 
+  /**
+   * Get account by id
+   * @param id
+   */
   async findOne(id: number): Promise<Account> {
     const accountEntity = await this.accountRepository.findOne(id);
     if (!accountEntity) {
@@ -73,6 +97,11 @@ export class AccountService {
     return AccountMapper.convertToModel(accountEntity);
   }
 
+  /**
+   * Update account
+   * @param id
+   * @param updateAccountDto
+   */
   async update(
     id: number,
     updateAccountDto: UpdateAccountRequestDto,
@@ -81,6 +110,10 @@ export class AccountService {
     return { id };
   }
 
+  /**
+   * Remove account
+   * @param id
+   */
   async remove(id: number): Promise<void> {
     await this.accountRepository.delete(id);
   }

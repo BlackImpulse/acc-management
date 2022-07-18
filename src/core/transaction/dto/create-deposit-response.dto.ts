@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Create deposit response dto
+ */
 export class CreateDepositResponseDto {
   @ApiProperty()
+  /** Deposit id */
   id: number;
 
   @ApiProperty()
-  depositValue: number;
+  /** Deposit value */
+  value: number;
 
   @ApiProperty()
+  /** New balance after deposit */
   newBalance: number;
 }

@@ -6,22 +6,24 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginUserRequestDto } from './dto/login-user-request.dto';
-import { LoginUserResponseDto } from './dto/login-user-response.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 
+/** Auth controller */
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  /** Login person */
   @ApiOperation({ summary: 'Login person' })
-  @ApiResponse({ status: HttpStatus.CREATED, type: LoginUserResponseDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: LoginResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(
-    @Body() loginUserDto: LoginUserRequestDto,
-  ): Promise<LoginUserResponseDto> {
+    @Body() loginUserDto: LoginRequestDto,
+  ): Promise<LoginResponseDto> {
     return await this.authService.login(loginUserDto);
   }
 }

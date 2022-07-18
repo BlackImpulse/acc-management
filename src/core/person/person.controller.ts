@@ -29,6 +29,7 @@ import { RequestLogInterceptor } from '../../common/interceptors/request-log.int
 import { PersonDto } from './dto/person.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
+/** Person controller */
 @UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
 @ApiTags('person')
@@ -36,6 +37,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
+  /** Create person */
   @ApiOperation({ summary: 'Create person' })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreatePersonResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -47,6 +49,7 @@ export class PersonController {
     return this.personService.create(createPersonDto);
   }
 
+  /** Get all persons */
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all persons' })
@@ -58,6 +61,7 @@ export class PersonController {
     return this.personService.findAll();
   }
 
+  /** Get person by id */
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get person by id' })
@@ -69,6 +73,7 @@ export class PersonController {
     return this.personService.findOne(id);
   }
 
+  /** Update person */
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update person' })
@@ -83,6 +88,7 @@ export class PersonController {
     return this.personService.update(id, updatePersonDto);
   }
 
+  /** Remove person */
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Remove person' })

@@ -3,6 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import * as moment from 'moment';
 
+/**
+ * Create person request dto
+ */
 export class CreatePersonRequestDto {
   @ApiProperty({
     description: 'Person name',
@@ -11,6 +14,7 @@ export class CreatePersonRequestDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(100)
+  /** Person name */
   name: string;
 
   @ApiProperty({
@@ -19,6 +23,7 @@ export class CreatePersonRequestDto {
   })
   @IsNotEmpty()
   @IsString()
+  /** Person document */
   document: string;
 
   @ApiProperty({
@@ -27,5 +32,6 @@ export class CreatePersonRequestDto {
   })
   @IsNotEmpty()
   @Transform(({ value }) => moment(value).toDate())
+  /** Person birthdate */
   birthDate: Date;
 }

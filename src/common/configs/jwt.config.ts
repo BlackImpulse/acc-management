@@ -1,5 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+/**
+ * Jwt config
+ */
 export const jwtConfig = {
   imports: [ConfigModule],
   inject: [ConfigService],

@@ -11,10 +11,18 @@ import { Request } from 'express';
 import { catchError, tap } from 'rxjs/operators';
 import { IncomingHttpHeaders } from 'http';
 
+/**
+ * Request log interceptor
+ */
 @Injectable()
 export class RequestLogInterceptor implements NestInterceptor {
   logger: Logger = new Logger(RequestLogInterceptor.name);
 
+  /**
+   * Intercept
+   * @param context
+   * @param next
+   */
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const requestStartAt = Date.now();
     const response = context.switchToHttp().getResponse<Response>();
@@ -42,6 +50,12 @@ export class RequestLogInterceptor implements NestInterceptor {
     );
   }
 
+  /**
+   * Log result
+   * @param logString
+   * @param requestStartAt
+   * @param response
+   */
   private logResult = (
     logString: any,
     requestStartAt: number,
@@ -64,6 +78,12 @@ export class RequestLogInterceptor implements NestInterceptor {
     }
   };
 
+  /**
+   * Log error
+   * @param logString
+   * @param requestStartAt
+   * @param err
+   */
   private logError = (logString: any, requestStartAt: number, err) => {
     this.logger.error({
       ...logString,
@@ -77,6 +97,14 @@ export class RequestLogInterceptor implements NestInterceptor {
     throw err;
   };
 
+  /**
+   * Get log strings
+   * @param headers
+   * @param method
+   * @param path
+   * @param requestPayload
+   * @param internalPayload
+   */
   private getLogString = (
     headers: IncomingHttpHeaders,
     method: string,

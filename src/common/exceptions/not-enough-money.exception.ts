@@ -1,5 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+/**
+ * Not enough money exception
+ */
 export class NotEnoughMoneyException extends HttpException {
   constructor(balance: number) {
     super(

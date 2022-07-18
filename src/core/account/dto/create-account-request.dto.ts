@@ -8,6 +8,9 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Create account request dto
+ */
 export class CreateAccountRequestDto {
   @ApiProperty({
     description: 'Person id',
@@ -16,6 +19,7 @@ export class CreateAccountRequestDto {
   @IsNotEmpty()
   @IsInt()
   @IsPositive()
+  /** Account person id */
   personId: number;
 
   @ApiProperty({
@@ -24,6 +28,7 @@ export class CreateAccountRequestDto {
   })
   @IsNotEmpty()
   @IsInt()
+  /** Account type */
   accountType: number;
 
   @ApiProperty({
@@ -33,6 +38,7 @@ export class CreateAccountRequestDto {
   @IsOptional()
   @IsNumber()
   @IsPositive()
+  /** Account daily withdrawal limit */
   dailyWithdrawalLimit?: number;
 
   @ApiProperty({
@@ -41,6 +47,7 @@ export class CreateAccountRequestDto {
   })
   @IsOptional()
   @IsNumber()
+  /** Account balance */
   balance?: number;
 
   @ApiProperty({
@@ -49,5 +56,6 @@ export class CreateAccountRequestDto {
   })
   @IsOptional()
   @IsBoolean()
+  /** Account active flag */
   activeFlag?: boolean;
 }

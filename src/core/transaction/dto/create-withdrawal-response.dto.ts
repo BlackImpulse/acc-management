@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+/**
+ * Create withdrawal response dto
+ */
 export class CreateWithdrawalResponseDto {
   @ApiProperty()
+  /** Withdrawal id */
   id: number;
 
   @ApiProperty()
-  depositValue: number;
+  /** Withdrawal value */
+  value: number;
 
   @ApiProperty()
+  /** New balance after withdrawal */
   newBalance: number;
 }

@@ -2,6 +2,10 @@ import { PersonEntity } from '../../../common/entity/person.entity';
 import { Person } from './person';
 import { plainToClass } from 'class-transformer';
 
+/**
+ * Person mapper
+ * @Class
+ */
 export class PersonMapper {
   static convertToEntity(personModel: Person): PersonEntity {
     const personEntity = {

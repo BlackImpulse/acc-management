@@ -18,6 +18,7 @@ import { NotActiveAccountException } from '../../common/exceptions/not-active-ac
 import { AccountService } from '../account/account.service';
 import * as moment from 'moment';
 
+/** Transaction service */
 @Injectable()
 export class TransactionService {
   constructor(
@@ -25,6 +26,10 @@ export class TransactionService {
     private readonly accountService: AccountService,
   ) {}
 
+  /**
+   * Create transaction
+   * @param createTransactionDto
+   */
   async create(
     createTransactionDto: CreateTransactionRequestDto,
   ): Promise<CreateTransactionResponseDto> {
@@ -39,6 +44,10 @@ export class TransactionService {
     );
   }
 
+  /**
+   * Create deposit
+   * @param depositDto
+   */
   async deposit(
     depositDto: CreateDepositRequestDto,
   ): Promise<CreateDepositResponseDto> {
@@ -60,11 +69,15 @@ export class TransactionService {
 
     return {
       id: depositDto.accountId,
-      depositValue: depositDto.value,
+      value: depositDto.value,
       newBalance,
     };
   }
 
+  /**
+   * Create withdrawal
+   * @param withdrawalDto
+   */
   async withdrawal(
     withdrawalDto: CreateWithdrawalRequestDto,
   ): Promise<CreateWithdrawalResponseDto> {
@@ -97,11 +110,15 @@ export class TransactionService {
 
     return {
       id: withdrawalDto.accountId,
-      depositValue: withdrawalDto.value,
+      value: withdrawalDto.value,
       newBalance,
     };
   }
 
+  /**
+   * Get sum of today withdrawal transactions
+   * @param accountId
+   */
   async todayWithdrawalTransactionsSum(accountId: number): Promise<number> {
     const today = moment();
     today.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
@@ -118,6 +135,9 @@ export class TransactionService {
     );
   }
 
+  /**
+   * Get all transactions
+   */
   async findAll(): Promise<Transaction[]> {
     const transactionEntities: TransactionEntity[] =
       await this.transactionRepository.find();
@@ -126,6 +146,10 @@ export class TransactionService {
     );
   }
 
+  /**
+   * Get transaction by id
+   * @param id
+   */
   async findOne(id: number): Promise<Transaction> {
     const transactionEntity: TransactionEntity =
       await this.transactionRepository.findOne(id);
@@ -135,6 +159,11 @@ export class TransactionService {
     return TransactionMapper.convertToModel(transactionEntity);
   }
 
+  /**
+   * Update transaction
+   * @param id
+   * @param updateTransactionDto
+   */
   async update(
     id: number,
     updateTransactionDto: UpdateTransactionRequestDto,
@@ -143,6 +172,10 @@ export class TransactionService {
     return { id };
   }
 
+  /**
+   * Remove transaction
+   * @param id
+   */
   async remove(id: number): Promise<void> {
     await this.transactionRepository.delete(id);
   }

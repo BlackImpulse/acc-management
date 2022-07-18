@@ -31,6 +31,7 @@ import { RequestLogInterceptor } from '../../common/interceptors/request-log.int
 import { TransactionDto } from './dto/transaction.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
+/** Transaction controller */
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(RequestLogInterceptor)
@@ -40,6 +41,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
+  /** Create deposit */
   @ApiOperation({ summary: 'Create deposit' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -54,6 +56,7 @@ export class TransactionController {
     return this.transactionService.deposit(createDepositDto);
   }
 
+  /** Create withdrawal */
   @ApiOperation({ summary: 'Create withdrawal' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -68,6 +71,7 @@ export class TransactionController {
     return this.transactionService.withdrawal(createWithdrawalDto);
   }
 
+  /** Get all transactions */
   @ApiOperation({ summary: 'Get all transactions' })
   @ApiResponse({ status: HttpStatus.OK, type: [TransactionDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -77,6 +81,7 @@ export class TransactionController {
     return this.transactionService.findAll();
   }
 
+  /** Get transaction by id */
   @ApiOperation({ summary: 'Get transaction by id' })
   @ApiResponse({ status: HttpStatus.OK, type: TransactionDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -88,6 +93,7 @@ export class TransactionController {
     return this.transactionService.findOne(id);
   }
 
+  /** Update transaction */
   @ApiOperation({ summary: 'Update transaction' })
   @ApiResponse({ status: HttpStatus.OK, type: UpdateTransactionResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -100,6 +106,7 @@ export class TransactionController {
     return this.transactionService.update(id, updateTransactionDto);
   }
 
+  /** Remove transaction */
   @ApiOperation({ summary: 'Remove transaction' })
   @ApiResponse({ status: HttpStatus.OK })
   @ApiBadRequestResponse({ description: 'Something wrong' })

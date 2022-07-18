@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { PersonModule } from '../person/person.module';
 
+/** Auth module */
 @Global()
 @Module({
   imports: [
