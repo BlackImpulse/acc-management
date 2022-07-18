@@ -9,7 +9,9 @@ export class TransactionMapper {
       id: transactionModel.id,
       value: transactionModel.value,
       transactionDate: transactionModel.transactionDate,
-      account: AccountMapper.convertToEntity(transactionModel.account),
+      account:
+        transactionModel.account &&
+        AccountMapper.convertToEntity(transactionModel.account),
     };
     return plainToClass(TransactionEntity, transactionEntity);
   }
@@ -19,7 +21,9 @@ export class TransactionMapper {
       id: transactionEntity.id,
       value: transactionEntity.value,
       transactionDate: transactionEntity.transactionDate,
-      account: AccountMapper.convertToModel(transactionEntity.account),
+      account:
+        transactionEntity.account &&
+        AccountMapper.convertToModel(transactionEntity.account),
     };
     return plainToClass(Transaction, transactionModel);
   }

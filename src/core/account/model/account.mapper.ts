@@ -12,14 +12,24 @@ export class AccountMapper {
       activeFlag: accountModel.activeFlag,
       accountType: accountModel.accountType,
       createDate: accountModel.createDate,
-      person: PersonMapper.convertToEntity(accountModel.client),
+      client:
+        accountModel.client &&
+        PersonMapper.convertToEntity(accountModel.client),
     };
     return plainToClass(AccountEntity, accountEntity);
   }
 
   static convertToModel(accountEntity: AccountEntity): Account {
     const account = {
-      ...accountEntity,
+      id: accountEntity.id,
+      balance: +accountEntity.balance,
+      dailyWithdrawalLimit: +accountEntity.dailyWithdrawalLimit,
+      activeFlag: accountEntity.activeFlag,
+      accountType: accountEntity.accountType,
+      createDate: accountEntity.createDate,
+      client:
+        accountEntity.client &&
+        PersonMapper.convertToModel(accountEntity.client),
     };
     return plainToClass(Account, account);
   }

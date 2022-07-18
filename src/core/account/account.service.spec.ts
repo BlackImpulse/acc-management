@@ -32,7 +32,7 @@ describe('Account service', () => {
       if (id !== 1) {
         throw new NotFoundException();
       }
-      return Promise.resolve(mockPerson);
+      return Promise.resolve(mockAccount);
     }),
   };
 
@@ -110,7 +110,7 @@ describe('Account service', () => {
     );
   });
 
-  it('blockAccount should return exception', () => {
+  it('blockAccount method should return exception', () => {
     const invalidId = 0;
 
     expect(() => service.blockAccount(invalidId)).rejects.toThrow(
@@ -118,7 +118,7 @@ describe('Account service', () => {
     );
   });
 
-  it('blockAccount should call update', async () => {
+  it('blockAccount method should call update', async () => {
     const validId = 1;
     jest
       .spyOn(service, 'findOne')
@@ -130,5 +130,21 @@ describe('Account service', () => {
     await service.blockAccount(validId);
 
     expect(service.update).toHaveBeenCalledWith(validId, { activeFlag: false });
+  });
+
+  it('getTransactions method should return exception', () => {
+    const invalidId = 0;
+
+    expect(() => service.getTransactions(invalidId)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('getTransactions method should return transactions', () => {
+    const validId = 1;
+
+    expect(service.getTransactions(validId)).resolves.toEqual(
+      mockAccount.transactions,
+    );
   });
 });

@@ -23,6 +23,7 @@ import { CreateAccountResponseDto } from './dto/create-account-response.dto';
 import { UpdateAccountRequestDto } from './dto/update-account-request.dto';
 import { UpdateAccountResponseDto } from './dto/update-account-response.dto';
 import { Account } from './model/account';
+import { Transaction } from '../transaction/model/transaction';
 
 @ApiTags('account')
 @Controller('account')
@@ -58,6 +59,17 @@ export class AccountController {
   @Get('balance/:id')
   async getBalance(@Param('id', ParseIntPipe) id: number): Promise<number> {
     return this.accountService.getBalance(id);
+  }
+
+  @ApiOperation({ summary: 'Get transactions' })
+  @ApiResponse({ status: HttpStatus.OK, type: [Transaction] })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @HttpCode(HttpStatus.OK)
+  @Get('transactions/:id')
+  async getTransactions(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Transaction[]> {
+    return this.accountService.getTransactions(id);
   }
 
   @ApiOperation({ summary: 'Get all accounts' })

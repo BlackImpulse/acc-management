@@ -9,6 +9,8 @@ import { Account } from './model/account';
 import { AccountMapper } from './model/account.mapper';
 import { UpdateAccountRequestDto } from './dto/update-account-request.dto';
 import { UpdateAccountResponseDto } from './dto/update-account-response.dto';
+import { TransactionMapper } from '../transaction/model/transaction.mapper';
+import { Transaction } from '../transaction/model/transaction';
 
 @Injectable()
 export class AccountService {
@@ -41,6 +43,18 @@ export class AccountService {
   async getBalance(id: number): Promise<number> {
     const account = await this.findOne(id);
     return account.balance;
+  }
+
+  async getTransactions(id: number): Promise<Transaction[]> {
+    const accountEntity = await this.accountRepository.findOne(id, {
+      relations: ['transactions'],
+    });
+    if (!accountEntity) {
+      throw new NotFoundException('Account not found');
+    }
+    return accountEntity.transactions.map((transaction) =>
+      TransactionMapper.convertToModel(transaction),
+    );
   }
 
   async findAll(): Promise<Account[]> {
