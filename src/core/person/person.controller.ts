@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +23,9 @@ import { CreatePersonResponseDto } from './dto/create-person-response.dto';
 import { UpdatePersonResponseDto } from './dto/update-person-response.dto';
 import { PersonService } from './person.service';
 import { Person } from './model/person';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+@UseGuards(ThrottlerGuard)
 @ApiTags('person')
 @Controller('person')
 export class PersonController {

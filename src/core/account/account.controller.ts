@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -24,7 +25,9 @@ import { UpdateAccountRequestDto } from './dto/update-account-request.dto';
 import { UpdateAccountResponseDto } from './dto/update-account-response.dto';
 import { Account } from './model/account';
 import { Transaction } from '../transaction/model/transaction';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+@UseGuards(ThrottlerGuard)
 @ApiTags('account')
 @Controller('account')
 export class AccountController {

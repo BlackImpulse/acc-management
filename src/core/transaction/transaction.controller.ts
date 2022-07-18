@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -24,7 +25,9 @@ import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
 import { CreateDepositResponseDto } from './dto/create-deposit-response.dto';
 import { CreateWithdrawalRequestDto } from './dto/create-withdrawal-request.dto';
 import { CreateWithdrawalResponseDto } from './dto/create-withdrawal-response.dto';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+@UseGuards(ThrottlerGuard)
 @ApiTags('transaction')
 @Controller('transaction')
 export class TransactionController {
