@@ -17,6 +17,11 @@ export class AccountService {
     private readonly personService: PersonService,
   ) {}
 
+  async blockAccount(id: number): Promise<UpdateAccountResponseDto> {
+    await this.findOne(id);
+    return this.update(id, { activeFlag: false });
+  }
+
   async create(
     createAccountDto: CreateAccountRequestDto,
   ): Promise<CreateAccountResponseDto> {

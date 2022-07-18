@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -27,6 +28,17 @@ import { Account } from './model/account';
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
+
+  @ApiOperation({ summary: 'Block account' })
+  @ApiResponse({ status: HttpStatus.OK, type: UpdateAccountResponseDto })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @HttpCode(HttpStatus.OK)
+  @Put('block/:id')
+  async blockAccount(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UpdateAccountResponseDto> {
+    return this.accountService.blockAccount(id);
+  }
 
   @ApiOperation({ summary: 'Create account' })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreateAccountResponseDto })

@@ -1,4 +1,11 @@
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Min,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAccountRequestDto {
@@ -35,4 +42,12 @@ export class CreateAccountRequestDto {
   @IsOptional()
   @IsNumber()
   balance?: number;
+
+  @ApiProperty({
+    description: 'Account active flag',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  activeFlag?: boolean;
 }

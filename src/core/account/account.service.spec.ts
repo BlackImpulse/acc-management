@@ -109,4 +109,26 @@ describe('Account service', () => {
       NotFoundException,
     );
   });
+
+  it('blockAccount should return exception', () => {
+    const invalidId = 0;
+
+    expect(() => service.blockAccount(invalidId)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('blockAccount should call update', async () => {
+    const validId = 1;
+    jest
+      .spyOn(service, 'findOne')
+      .mockReturnValue(Promise.resolve(mockAccount));
+    jest
+      .spyOn(service, 'update')
+      .mockReturnValue(Promise.resolve({ id: validId }));
+
+    await service.blockAccount(validId);
+
+    expect(service.update).toHaveBeenCalledWith(validId, { activeFlag: false });
+  });
 });
