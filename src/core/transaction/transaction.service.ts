@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DeepPartial } from 'typeorm';
+import { DeepPartial, LessThan, MoreThan } from 'typeorm';
 import { TransactionRepository } from './transaction.repository';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
@@ -8,10 +8,15 @@ import { Transaction } from './model/transaction';
 import { TransactionEntity } from '../../common/entity/transaction.entity';
 import { UpdateTransactionRequestDto } from './dto/update-transaction-request.dto';
 import { UpdateTransactionResponseDto } from './dto/update-transaction-response.dto';
-import { AccountService } from '../account/account.service';
 import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
+import { CreateWithdrawalRequestDto } from './dto/create-withdrawal-request.dto';
+import { NotEnoughMoneyException } from '../../common/exceptions/not-enough-money.exception';
+import { WithdrawalLimitExceededException } from '../../common/exceptions/withdrawal-limit-exceeded.exception';
+import { CreateWithdrawalResponseDto } from './dto/create-withdrawal-response.dto';
 import { CreateDepositResponseDto } from './dto/create-deposit-response.dto';
 import { NotActiveAccountException } from '../../common/exceptions/not-active-account.exception';
+import { AccountService } from '../account/account.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class TransactionService {
@@ -58,6 +63,59 @@ export class TransactionService {
       depositValue: depositDto.value,
       newBalance,
     };
+  }
+
+  async withdrawal(
+    withdrawalDto: CreateWithdrawalRequestDto,
+  ): Promise<CreateWithdrawalResponseDto> {
+    const account = await this.accountService.findOne(withdrawalDto.accountId);
+
+    if (!account.activeFlag) {
+      throw new NotActiveAccountException();
+    }
+
+    const newBalance = Number(account.balance) - Number(withdrawalDto.value);
+    if (newBalance < 0) {
+      throw new NotEnoughMoneyException(account.balance);
+    }
+
+    const dailyWithdrawalLimit = account.dailyWithdrawalLimit;
+    const todayWithdrawalTransactionsSum =
+      await this.todayWithdrawalTransactionsSum(withdrawalDto.accountId);
+    if (Math.abs(todayWithdrawalTransactionsSum) >= dailyWithdrawalLimit) {
+      throw new WithdrawalLimitExceededException(dailyWithdrawalLimit);
+    }
+
+    await this.accountService.update(withdrawalDto.accountId, {
+      balance: newBalance,
+    });
+
+    await this.create({
+      value: -withdrawalDto.value,
+      accountId: withdrawalDto.accountId,
+    });
+
+    return {
+      id: withdrawalDto.accountId,
+      depositValue: withdrawalDto.value,
+      newBalance,
+    };
+  }
+
+  async todayWithdrawalTransactionsSum(accountId: number): Promise<number> {
+    const today = moment();
+    today.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    const todayWithdrawalTransactions = await this.transactionRepository.find({
+      account: { id: accountId },
+      value: LessThan(0),
+      transactionDate: MoreThan(today.toDate()),
+    });
+
+    return todayWithdrawalTransactions.reduce(
+      (sum, transaction) => Number(transaction.value) + sum,
+      0,
+    );
   }
 
   async findAll(): Promise<Transaction[]> {

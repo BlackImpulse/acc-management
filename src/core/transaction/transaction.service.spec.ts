@@ -5,6 +5,9 @@ import { AccountService } from '../account/account.service';
 import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
 import { NotActiveAccountException } from '../../common/exceptions/not-active-account.exception';
 import { NotFoundException } from '@nestjs/common';
+import { CreateWithdrawalRequestDto } from './dto/create-withdrawal-request.dto';
+import { NotEnoughMoneyException } from '../../common/exceptions/not-enough-money.exception';
+import { WithdrawalLimitExceededException } from '../../common/exceptions/withdrawal-limit-exceeded.exception';
 
 describe('Account service', () => {
   let service: TransactionService;
@@ -20,7 +23,20 @@ describe('Account service', () => {
     transactions: [{ id: 1, value: 100, transactionDate: new Date() }],
   };
 
-  const mockTransactionRepository = {};
+  const mockTransaction = {
+    id: 1,
+    value: 100,
+    transactionDate: new Date(),
+  };
+
+  const mockTransactionRepository = {
+    findOne: jest.fn().mockImplementation((id) => {
+      if (id !== 1) {
+        throw new NotFoundException();
+      }
+      return Promise.resolve(mockTransaction);
+    }),
+  };
 
   const mockAccountService = {
     findOne: jest.fn().mockImplementation((id) => {
@@ -97,6 +113,87 @@ describe('Account service', () => {
       .mockReturnValue(Promise.resolve({ ...mockAccount, activeFlag: false }));
 
     expect(() => service.deposit(createDepositDto)).rejects.toThrow(
+      NotActiveAccountException,
+    );
+  });
+
+  it('withdrawal method should throw NotEnoughMoneyException', () => {
+    const createWithdrawalDto: CreateWithdrawalRequestDto = {
+      accountId: 1,
+      value: mockAccount.balance + 100,
+    };
+    jest
+      .spyOn(mockAccountService, 'findOne')
+      .mockReturnValue(Promise.resolve({ ...mockAccount, activeFlag: true }));
+
+    expect(() => service.withdrawal(createWithdrawalDto)).rejects.toThrow(
+      NotEnoughMoneyException,
+    );
+  });
+
+  it('withdrawal method should call update account balance', async () => {
+    const createWithdrawalDto: CreateWithdrawalRequestDto = {
+      accountId: 1,
+      value: 100,
+    };
+    jest
+      .spyOn(service, 'todayWithdrawalTransactionsSum')
+      .mockReturnValue(Promise.resolve(mockAccount.dailyWithdrawalLimit - 100));
+    jest
+      .spyOn(mockAccountService, 'findOne')
+      .mockReturnValue(Promise.resolve({ ...mockAccount, activeFlag: true }));
+    jest.spyOn(service, 'create').mockReturnValue(Promise.resolve(undefined));
+
+    await service.withdrawal(createWithdrawalDto);
+
+    expect(mockAccountService.update).toHaveBeenCalled();
+  });
+
+  it('withdrawal method should call create transaction', async () => {
+    const createWithdrawalDto: CreateWithdrawalRequestDto = {
+      accountId: 1,
+      value: 100,
+    };
+    jest
+      .spyOn(service, 'todayWithdrawalTransactionsSum')
+      .mockReturnValue(Promise.resolve(mockAccount.dailyWithdrawalLimit - 100));
+    jest
+      .spyOn(mockAccountService, 'findOne')
+      .mockReturnValue(Promise.resolve({ ...mockAccount, activeFlag: true }));
+    jest.spyOn(service, 'create').mockReturnValue(Promise.resolve(undefined));
+
+    await service.withdrawal(createWithdrawalDto);
+
+    expect(service.create).toHaveBeenCalledWith({
+      value: -createWithdrawalDto.value,
+      accountId: createWithdrawalDto.accountId,
+    });
+  });
+
+  it('withdrawal method should throw WithdrawalLimitExceededException', () => {
+    const createWithdrawalDto: CreateWithdrawalRequestDto = {
+      accountId: 1,
+      value: 100,
+    };
+    jest
+      .spyOn(service, 'todayWithdrawalTransactionsSum')
+      .mockReturnValue(Promise.resolve(mockAccount.dailyWithdrawalLimit));
+
+    expect(() => service.withdrawal(createWithdrawalDto)).rejects.toThrow(
+      WithdrawalLimitExceededException,
+    );
+  });
+
+  it('withdrawal method should throw NotActiveAccountException', () => {
+    const createWithdrawalDto: CreateWithdrawalRequestDto = {
+      accountId: 1,
+      value: 100,
+    };
+    jest
+      .spyOn(mockAccountService, 'findOne')
+      .mockReturnValue(Promise.resolve({ ...mockAccount, activeFlag: false }));
+
+    expect(() => service.deposit(createWithdrawalDto)).rejects.toThrow(
       NotActiveAccountException,
     );
   });

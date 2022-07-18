@@ -22,6 +22,8 @@ import { UpdateTransactionRequestDto } from './dto/update-transaction-request.dt
 import { UpdateTransactionResponseDto } from './dto/update-transaction-response.dto';
 import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
 import { CreateDepositResponseDto } from './dto/create-deposit-response.dto';
+import { CreateWithdrawalRequestDto } from './dto/create-withdrawal-request.dto';
+import { CreateWithdrawalResponseDto } from './dto/create-withdrawal-response.dto';
 
 @ApiTags('transaction')
 @Controller('transaction')
@@ -40,6 +42,20 @@ export class TransactionController {
     @Body() createDepositDto: CreateDepositRequestDto,
   ): Promise<CreateDepositResponseDto> {
     return this.transactionService.deposit(createDepositDto);
+  }
+
+  @ApiOperation({ summary: 'Create withdrawal' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: CreateWithdrawalResponseDto,
+  })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('withdrawal')
+  async withdrawal(
+    @Body() createWithdrawalDto: CreateWithdrawalRequestDto,
+  ): Promise<CreateWithdrawalResponseDto> {
+    return this.transactionService.withdrawal(createWithdrawalDto);
   }
 
   @ApiOperation({ summary: 'Get all transactions' })
