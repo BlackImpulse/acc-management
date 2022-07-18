@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -26,6 +27,7 @@ import { PersonService } from './person.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { RequestLogInterceptor } from '../../common/interceptors/request-log.interceptor';
 import { PersonDto } from './dto/person.dto';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
@@ -45,6 +47,8 @@ export class PersonController {
     return this.personService.create(createPersonDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all persons' })
   @ApiResponse({ status: HttpStatus.OK, type: [PersonDto] })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -54,6 +58,8 @@ export class PersonController {
     return this.personService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get person by id' })
   @ApiResponse({ status: HttpStatus.OK, type: PersonDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -63,6 +69,8 @@ export class PersonController {
     return this.personService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update person' })
   @ApiResponse({ status: HttpStatus.OK, type: UpdatePersonResponseDto })
   @ApiBadRequestResponse({ description: 'Something wrong' })
@@ -75,6 +83,8 @@ export class PersonController {
     return this.personService.update(id, updatePersonDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Remove person' })
   @ApiResponse({ status: HttpStatus.OK })
   @ApiBadRequestResponse({ description: 'Something wrong' })

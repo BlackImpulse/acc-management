@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -28,7 +29,10 @@ import { CreateWithdrawalResponseDto } from './dto/create-withdrawal-response.dt
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { RequestLogInterceptor } from '../../common/interceptors/request-log.interceptor';
 import { TransactionDto } from './dto/transaction.dto';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(RequestLogInterceptor)
 @UseGuards(ThrottlerGuard)
 @ApiTags('transaction')

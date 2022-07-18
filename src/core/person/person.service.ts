@@ -35,6 +35,16 @@ export class PersonService {
     return PersonMapper.convertToModel(personEntity);
   }
 
+  async findByName(name: string): Promise<Person> {
+    const personEntity: PersonEntity = await this.personRepository.findOne({
+      name: name,
+    });
+    if (!personEntity) {
+      throw new NotFoundException('Person not found');
+    }
+    return PersonMapper.convertToModel(personEntity);
+  }
+
   async update(
     id: number,
     updatePersonDto: UpdatePersonRequestDto,
