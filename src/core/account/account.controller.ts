@@ -39,6 +39,15 @@ export class AccountController {
     return this.accountService.create(createAccountDto);
   }
 
+  @ApiOperation({ summary: 'Get balance' })
+  @ApiResponse({ status: HttpStatus.OK, type: Number })
+  @ApiBadRequestResponse({ description: 'Something wrong' })
+  @HttpCode(HttpStatus.OK)
+  @Get('balance/:id')
+  async getBalance(@Param('id', ParseIntPipe) id: number): Promise<number> {
+    return this.accountService.getBalance(id);
+  }
+
   @ApiOperation({ summary: 'Get all accounts' })
   @ApiResponse({ status: HttpStatus.OK, type: Account })
   @ApiBadRequestResponse({ description: 'Something wrong' })

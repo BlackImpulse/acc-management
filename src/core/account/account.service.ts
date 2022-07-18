@@ -33,6 +33,11 @@ export class AccountService {
     return this.accountRepository.save(account);
   }
 
+  async getBalance(id: number): Promise<number> {
+    const account = await this.findOne(id);
+    return account.balance;
+  }
+
   async findAll(): Promise<Account[]> {
     const accountEntities: AccountEntity[] =
       await this.accountRepository.find();

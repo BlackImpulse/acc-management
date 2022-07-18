@@ -8,6 +8,17 @@ import { CreateAccountRequestDto } from './dto/create-account-request.dto';
 describe('Account service', () => {
   let service: AccountService;
 
+  const mockAccount = {
+    id: 1,
+    balance: 1000,
+    dailyWithdrawalLimit: 500,
+    activeFlag: true,
+    accountType: 1,
+    createDate: new Date(),
+    client: undefined,
+    transactions: [{ id: 1, value: 100, transactionDate: new Date() }],
+  };
+
   const mockPerson = {
     id: 1,
     name: 'Sergei',
@@ -17,6 +28,12 @@ describe('Account service', () => {
 
   const mockAccountRepository = {
     save: jest.fn().mockImplementation(),
+    findOne: jest.fn().mockImplementation((id) => {
+      if (id !== 1) {
+        throw new NotFoundException();
+      }
+      return Promise.resolve(mockPerson);
+    }),
   };
 
   const mockPersonService = {
@@ -62,6 +79,33 @@ describe('Account service', () => {
     };
 
     expect(() => service.create(createAccountDto)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('getBalance method should call findOne', () => {
+    const validId = 1;
+    service.getBalance(validId);
+
+    expect(mockAccountRepository.findOne).toHaveBeenCalled();
+  });
+
+  it('getBalance method should return balance', () => {
+    const validId = 1;
+    const findOneSpy = jest
+      .spyOn(service, 'findOne')
+      .mockReturnValue(Promise.resolve(mockAccount));
+
+    const balance = service.getBalance(validId);
+
+    expect(findOneSpy).toHaveBeenCalled();
+    expect(balance).resolves.toBe(mockAccount.balance);
+  });
+
+  it('getBalance method should throw exception', () => {
+    const invalidId = 0;
+
+    expect(() => service.getBalance(invalidId)).rejects.toThrow(
       NotFoundException,
     );
   });
