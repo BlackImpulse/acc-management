@@ -13,5 +13,6 @@ import { PersonModule } from '../person/person.module';
   ],
   providers: [AccountService],
   controllers: [AccountController],
+  exports: [AccountService],
 })
 export class AccountModule {}

@@ -17,29 +17,29 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
-import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
-import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { Transaction } from './model/transaction';
 import { UpdateTransactionRequestDto } from './dto/update-transaction-request.dto';
 import { UpdateTransactionResponseDto } from './dto/update-transaction-response.dto';
+import { CreateDepositRequestDto } from './dto/create-deposit-request.dto';
+import { CreateDepositResponseDto } from './dto/create-deposit-response.dto';
 
 @ApiTags('transaction')
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @ApiOperation({ summary: 'Create transaction' })
+  @ApiOperation({ summary: 'Create deposit' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    type: CreateTransactionResponseDto,
+    type: CreateDepositResponseDto,
   })
   @ApiBadRequestResponse({ description: 'Something wrong' })
   @HttpCode(HttpStatus.CREATED)
-  @Post()
-  async create(
-    @Body() createTransactionDto: CreateTransactionRequestDto,
-  ): Promise<CreateTransactionResponseDto> {
-    return this.transactionService.create(createTransactionDto);
+  @Post('deposit')
+  async deposit(
+    @Body() createDepositDto: CreateDepositRequestDto,
+  ): Promise<CreateDepositResponseDto> {
+    return this.transactionService.deposit(createDepositDto);
   }
 
   @ApiOperation({ summary: 'Get all transactions' })
